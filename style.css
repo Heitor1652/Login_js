@@ -1,0 +1,599 @@
+/* ============================================================
+   AuthFlow — Sistema de Login Moderno
+   Estilo: Dark luxury com detalhes dourados e glassmorphism
+   Autor: Portfólio Full-Stack
+   ============================================================ */
+
+/* ── Reset & Variáveis ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* Paleta principal */
+  --bg:          #0a0a0f;
+  --surface:     #111118;
+  --surface-2:   #1a1a24;
+  --border:      rgba(255,255,255,0.07);
+  --border-focus: rgba(196, 164, 102, 0.6);
+
+  /* Texto */
+  --text:        #f0ede8;
+  --text-muted:  rgba(240,237,232,0.45);
+  --text-dim:    rgba(240,237,232,0.25);
+
+  /* Acento dourado */
+  --gold:        #c4a466;
+  --gold-light:  #e2c98a;
+  --gold-dim:    rgba(196, 164, 102, 0.15);
+
+  /* Estado */
+  --error:       #e05c5c;
+  --error-bg:    rgba(224, 92, 92, 0.1);
+  --success:     #5cbf8a;
+  --success-bg:  rgba(92, 191, 138, 0.1);
+
+  /* Glow cores */
+  --glow-a: rgba(196, 164, 102, 0.12);
+  --glow-b: rgba(130, 100, 200, 0.08);
+  --glow-c: rgba(80,  160, 220, 0.08);
+
+  /* Tipografia */
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body:    'DM Sans', sans-serif;
+
+  /* Espaçamentos & formas */
+  --radius:    16px;
+  --radius-sm: 10px;
+  --transition: 0.25s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── Base ── */
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Layout de Tela ── */
+.screen {
+  position: fixed; inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  transition: opacity 0.45s ease, transform 0.45s cubic-bezier(.4,0,.2,1);
+}
+
+.screen.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(18px);
+}
+
+/* ── Textura de ruído (atmosphere) ── */
+.noise {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 256px;
+  opacity: 0.5;
+  z-index: 0;
+}
+
+/* ── Glows de fundo ── */
+.glow {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  z-index: 0;
+}
+.glow-1  { width: 400px; height: 400px; background: var(--glow-a); top: -10%;  left: -10%; }
+.glow-2  { width: 300px; height: 300px; background: var(--glow-b); bottom: 0%; right: -5%; }
+.glow-3  { width: 350px; height: 350px; background: var(--glow-c); top: -5%;   right: -5%; }
+.glow-4  { width: 280px; height: 280px; background: var(--glow-a); bottom: 5%; left: -8%;  }
+.glow-dash { width: 600px; height: 600px; background: var(--glow-a); top: -20%; right: -10%; }
+
+/* ── Card Central ── */
+.card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  background: rgba(17, 17, 24, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 2.5rem 2rem;
+  box-shadow:
+    0 0 0 1px rgba(196,164,102,0.05),
+    0 32px 80px rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  animation: cardIn 0.6s cubic-bezier(.4,0,.2,1) both;
+}
+
+.card-tall { max-width: 440px; }
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(24px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+/* ── Header do Card ── */
+.card-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.logo {
+  font-size: 2rem;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 0.5rem;
+  animation: spin 12s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0); }
+  to   { transform: rotate(360deg); }
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  line-height: 1;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+  letter-spacing: 0.04em;
+}
+
+/* ── Formulário ── */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.field label {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ── Input Wrapper ── */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper .icon {
+  position: absolute;
+  left: 0.9rem;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  pointer-events: none;
+  transition: color var(--transition);
+}
+
+.input-wrapper input {
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  padding: 0.75rem 2.8rem 0.75rem 2.4rem;
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+}
+
+.input-wrapper input::placeholder {
+  color: var(--text-dim);
+}
+
+.input-wrapper input:focus {
+  border-color: var(--border-focus);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px rgba(196,164,102,0.08), 0 0 20px rgba(196,164,102,0.05);
+}
+
+.input-wrapper input:focus + .icon,
+.input-wrapper:focus-within .icon {
+  color: var(--gold);
+}
+
+/* Input com erro */
+.field.has-error .input-wrapper input {
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px rgba(224, 92, 92, 0.1);
+}
+
+/* Input com sucesso */
+.field.has-success .input-wrapper input {
+  border-color: var(--success);
+}
+
+/* ── Toggle de senha ── */
+.toggle-password {
+  position: absolute;
+  right: 0.7rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  padding: 0.3rem;
+  line-height: 1;
+  transition: color var(--transition), transform var(--transition);
+}
+.toggle-password:hover { color: var(--gold); transform: scale(1.1); }
+
+/* ── Mensagem de erro do campo ── */
+.field-error {
+  font-size: 0.75rem;
+  color: var(--error);
+  min-height: 1em;
+  display: block;
+  animation: slideIn 0.2s ease both;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Barra de força da senha ── */
+.strength-bar {
+  height: 3px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 0.3rem;
+}
+
+.strength-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 99px;
+  transition: width 0.4s ease, background 0.4s ease;
+  background: var(--error);
+}
+
+.strength-fill[data-level="1"] { width: 25%; background: var(--error); }
+.strength-fill[data-level="2"] { width: 50%; background: #e0943c; }
+.strength-fill[data-level="3"] { width: 75%; background: #c4c466; }
+.strength-fill[data-level="4"] { width: 100%; background: var(--success); }
+
+.strength-label {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  transition: color var(--transition);
+}
+
+/* ── Mensagem global do formulário ── */
+.form-message {
+  border-radius: var(--radius-sm);
+  padding: 0;
+  font-size: 0.82rem;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.form-message.error {
+  padding: 0.7rem 1rem;
+  max-height: 80px;
+  background: var(--error-bg);
+  border: 1px solid rgba(224,92,92,0.25);
+  color: var(--error);
+}
+
+.form-message.success {
+  padding: 0.7rem 1rem;
+  max-height: 80px;
+  background: var(--success-bg);
+  border: 1px solid rgba(92,191,138,0.25);
+  color: var(--success);
+}
+
+/* ── Botão Principal ── */
+.btn-primary {
+  position: relative;
+  width: 100%;
+  background: var(--gold);
+  color: #0a0a0f;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  padding: 0.85rem;
+  cursor: pointer;
+  margin-top: 0.4rem;
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition), opacity var(--transition);
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.btn-primary:hover {
+  background: var(--gold-light);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(196,164,102,0.3);
+}
+
+.btn-primary:hover::before { opacity: 1; }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.btn-loader {
+  display: inline-block;
+  animation: spin 0.8s linear infinite;
+}
+
+/* ── Link de troca de tela ── */
+.switch-text {
+  text-align: center;
+  margin-top: 1.2rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--gold);
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--transition);
+}
+.link-btn:hover { color: var(--gold-light); }
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+
+.dashboard {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 780px;
+  animation: cardIn 0.6s ease both;
+}
+
+/* ── Header do dashboard ── */
+.dash-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: rgba(17,17,24,0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 1.5rem;
+}
+
+.dash-logo {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 300;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+}
+
+.dash-user {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--gold);
+  color: #0a0a0f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.dash-user > span {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  display: none;
+}
+
+@media (min-width: 480px) {
+  .dash-user > span { display: inline; }
+}
+
+.btn-logout {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  transition: border-color var(--transition), color var(--transition), background var(--transition);
+}
+.btn-logout:hover {
+  border-color: var(--error);
+  color: var(--error);
+  background: rgba(224,92,92,0.07);
+}
+
+/* ── Main do dashboard ── */
+.dash-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/* Bloco de boas-vindas */
+.welcome-block {
+  padding: 2rem 1.5rem;
+  background: rgba(17,17,24,0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  border-left: 3px solid var(--gold);
+}
+
+.welcome-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--text);
+}
+
+.welcome-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+}
+
+/* Grid de stats */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.2rem 1.3rem;
+  background: rgba(17,17,24,0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  animation: cardIn 0.5s ease both;
+  animation-delay: var(--delay, 0s);
+  transition: border-color var(--transition), transform var(--transition);
+}
+
+.stat-card:hover {
+  border-color: rgba(196,164,102,0.2);
+  transform: translateY(-2px);
+}
+
+.stat-icon { font-size: 1.4rem; }
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.stat-value {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Card de info */
+.info-card {
+  padding: 1.5rem;
+  background: rgba(17,17,24,0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.info-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--gold);
+  margin-bottom: 1rem;
+  letter-spacing: 0.03em;
+}
+
+.info-card ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.5rem;
+}
+
+.info-card li {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ============================================================
+   RESPONSIVIDADE
+   ============================================================ */
+
+@media (max-width: 480px) {
+  .card { padding: 2rem 1.4rem; }
+  .title { font-size: 1.8rem; }
+  .welcome-title { font-size: 1.5rem; }
+  .stats-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   ACESSIBILIDADE — foco visível
+   ============================================================ */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+/* ── Scrollbar personalizada ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }

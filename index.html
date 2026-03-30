@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AuthFlow — Sistema de Autenticação</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google Fonts: display sofisticado + corpo clean -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- =====================
+       TELA DE LOGIN
+  ======================== -->
+  <div class="screen" id="screen-login">
+    <div class="noise"></div>
+    <div class="glow glow-1"></div>
+    <div class="glow glow-2"></div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="logo">⬡</div>
+        <h1 class="title">AuthFlow</h1>
+        <p class="subtitle">Bem-vindo de volta</p>
+      </div>
+
+      <form id="form-login" class="form" novalidate>
+        <!-- Campo de email -->
+        <div class="field" id="field-login-email">
+          <label for="login-email">E-mail</label>
+          <div class="input-wrapper">
+            <span class="icon">✉</span>
+            <input
+              type="email"
+              id="login-email"
+              name="email"
+              placeholder="seu@email.com"
+              autocomplete="email"
+            />
+          </div>
+          <span class="field-error"></span>
+        </div>
+
+        <!-- Campo de senha -->
+        <div class="field" id="field-login-senha">
+          <label for="login-senha">Senha</label>
+          <div class="input-wrapper">
+            <span class="icon">🔒</span>
+            <input
+              type="password"
+              id="login-senha"
+              name="senha"
+              placeholder="••••••••"
+              autocomplete="current-password"
+            />
+            <!-- Botão para mostrar/ocultar senha -->
+            <button type="button" class="toggle-password" data-target="login-senha" aria-label="Mostrar senha">
+              <span class="eye">👁</span>
+            </button>
+          </div>
+          <span class="field-error"></span>
+        </div>
+
+        <!-- Mensagem global de erro/sucesso -->
+        <div class="form-message" id="login-message"></div>
+
+        <button type="submit" class="btn-primary" id="btn-login">
+          <span class="btn-text">Entrar</span>
+          <span class="btn-loader" hidden>⟳</span>
+        </button>
+      </form>
+
+      <p class="switch-text">
+        Não tem conta?
+        <button class="link-btn" data-goto="screen-cadastro">Criar conta</button>
+      </p>
+    </div>
+  </div>
+
+  <!-- =====================
+       TELA DE CADASTRO
+  ======================== -->
+  <div class="screen hidden" id="screen-cadastro">
+    <div class="noise"></div>
+    <div class="glow glow-3"></div>
+    <div class="glow glow-4"></div>
+
+    <div class="card card-tall">
+      <div class="card-header">
+        <div class="logo">⬡</div>
+        <h1 class="title">AuthFlow</h1>
+        <p class="subtitle">Crie sua conta</p>
+      </div>
+
+      <form id="form-cadastro" class="form" novalidate>
+        <!-- Nome -->
+        <div class="field" id="field-cad-nome">
+          <label for="cad-nome">Nome completo</label>
+          <div class="input-wrapper">
+            <span class="icon">✦</span>
+            <input
+              type="text"
+              id="cad-nome"
+              name="nome"
+              placeholder="Seu nome"
+              autocomplete="name"
+            />
+          </div>
+          <span class="field-error"></span>
+        </div>
+
+        <!-- Email -->
+        <div class="field" id="field-cad-email">
+          <label for="cad-email">E-mail</label>
+          <div class="input-wrapper">
+            <span class="icon">✉</span>
+            <input
+              type="email"
+              id="cad-email"
+              name="email"
+              placeholder="seu@email.com"
+              autocomplete="email"
+            />
+          </div>
+          <span class="field-error"></span>
+        </div>
+
+        <!-- Senha -->
+        <div class="field" id="field-cad-senha">
+          <label for="cad-senha">Senha</label>
+          <div class="input-wrapper">
+            <span class="icon">🔒</span>
+            <input
+              type="password"
+              id="cad-senha"
+              name="senha"
+              placeholder="Mínimo 8 caracteres"
+              autocomplete="new-password"
+            />
+            <button type="button" class="toggle-password" data-target="cad-senha" aria-label="Mostrar senha">
+              <span class="eye">👁</span>
+            </button>
+          </div>
+          <!-- Barra de força da senha -->
+          <div class="strength-bar">
+            <div class="strength-fill" id="strength-fill"></div>
+          </div>
+          <span class="strength-label" id="strength-label"></span>
+          <span class="field-error"></span>
+        </div>
+
+        <!-- Confirmar Senha -->
+        <div class="field" id="field-cad-confirmar">
+          <label for="cad-confirmar">Confirmar senha</label>
+          <div class="input-wrapper">
+            <span class="icon">🔑</span>
+            <input
+              type="password"
+              id="cad-confirmar"
+              name="confirmar"
+              placeholder="Repita a senha"
+              autocomplete="new-password"
+            />
+            <button type="button" class="toggle-password" data-target="cad-confirmar" aria-label="Mostrar senha">
+              <span class="eye">👁</span>
+            </button>
+          </div>
+          <span class="field-error"></span>
+        </div>
+
+        <!-- Mensagem global -->
+        <div class="form-message" id="cadastro-message"></div>
+
+        <button type="submit" class="btn-primary" id="btn-cadastro">
+          <span class="btn-text">Criar conta</span>
+          <span class="btn-loader" hidden>⟳</span>
+        </button>
+      </form>
+
+      <p class="switch-text">
+        Já tem conta?
+        <button class="link-btn" data-goto="screen-login">Fazer login</button>
+      </p>
+    </div>
+  </div>
+
+  <!-- =====================
+       TELA DE DASHBOARD
+  ======================== -->
+  <div class="screen hidden" id="screen-dashboard">
+    <div class="noise"></div>
+    <div class="glow glow-dash"></div>
+
+    <div class="dashboard">
+      <!-- Header / Navbar -->
+      <header class="dash-header">
+        <div class="dash-logo">⬡ AuthFlow</div>
+        <div class="dash-user">
+          <div class="avatar" id="dash-avatar"></div>
+          <span id="dash-username"></span>
+          <button class="btn-logout" id="btn-logout">Sair</button>
+        </div>
+      </header>
+
+      <!-- Conteúdo -->
+      <main class="dash-main">
+        <div class="welcome-block">
+          <h2 class="welcome-title">Olá, <span id="dash-nome"></span> 👋</h2>
+          <p class="welcome-sub">Você está autenticado com sucesso.</p>
+        </div>
+
+        <!-- Cards de status -->
+        <div class="stats-grid">
+          <div class="stat-card" style="--delay:0.1s">
+            <div class="stat-icon">🔐</div>
+            <div class="stat-info">
+              <span class="stat-value">Ativo</span>
+              <span class="stat-label">Status da Sessão</span>
+            </div>
+          </div>
+          <div class="stat-card" style="--delay:0.2s">
+            <div class="stat-icon">📧</div>
+            <div class="stat-info">
+              <span class="stat-value" id="dash-email-display"></span>
+              <span class="stat-label">E-mail</span>
+            </div>
+          </div>
+          <div class="stat-card" style="--delay:0.3s">
+            <div class="stat-icon">📅</div>
+            <div class="stat-info">
+              <span class="stat-value" id="dash-data"></span>
+              <span class="stat-label">Membro desde</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção de info do projeto -->
+        <div class="info-card">
+          <h3>Sobre este projeto</h3>
+          <ul>
+            <li>✅ Validação de formulários em tempo real</li>
+            <li>✅ Hash de senha (SHA-256 simulado)</li>
+            <li>✅ Persistência via LocalStorage</li>
+            <li>✅ Sessão protegida com token</li>
+            <li>✅ Design responsivo mobile-first</li>
+            <li>✅ Feedback visual com animações</li>
+            <li>✅ Proteção contra cadastro duplicado</li>
+            <li>✅ Indicador de força de senha</li>
+          </ul>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
