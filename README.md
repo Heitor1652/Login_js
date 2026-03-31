@@ -13,7 +13,7 @@ Interface moderna com múltiplas telas:
 
 Com transições suaves, feedback visual e design responsivo.
 
-#Tecnologias utilizadas
+# Tecnologias utilizadas
 
 - **HTML5** — Estrutura das páginas  
 - **CSS3** — Estilização moderna e responsiva  
@@ -24,7 +24,7 @@ Com transições suaves, feedback visual e design responsivo.
 
 # Funcionalidades
 
-# Autenticação
+- Autenticação
 - Login com e-mail e senha  
 - Cadastro de novos usuários  
 - Validação de credenciais  
