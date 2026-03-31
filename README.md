@@ -29,7 +29,7 @@ Com transições suaves, feedback visual e design responsivo.
 - Cadastro de novos usuários  
 - Validação de credenciais  
 
-# Segurança (simulada)
+# Segurança
 - Hash de senha com SHA-256  
 - Tokens de sessão aleatórios  
 - Proteção de rotas (dashboard)  
